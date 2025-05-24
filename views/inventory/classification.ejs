@@ -1,0 +1,12 @@
+<!-- Uses an EJS code block to contain a JS if structure to determine if a "title exists" -->
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } %>
+
+        <%# messages() %>
+            <%- grid %>
+
+                <!-- Note - I removed the default else statement provided by lesson since it was redundant and unnecessary
+        and it also would be called AFTER res.render() which I am sure could cause problems -->

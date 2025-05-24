@@ -1,0 +1,69 @@
+<%# Passing the title from the error handler %>
+    <% if (title) { %>
+        <h1>
+            <%= title %>
+        </h1>
+        <% } else { %>
+            <h1>Oops! Something Went Awry</h1>
+            <%# Fallback title %>
+                <% } %>
+
+                    <div class="error-container">
+                        <%# Display the specific error message %>
+                            <% if (message) { %>
+                                <p class="error-message-detail"><strong>Technical Details:</strong>
+                                    <%= message %>
+                                </p>
+                                <% } %>
+
+                                    <%# Custom messages based on error type, especially for 404 %>
+                                        <% if (title && title.toString().includes('404')) { %>
+                                            <img src="/images/errors/404-lost-astronaut.webp" alt="Lost Astronaut"
+                                                style="max-width: 500px; display: block; margin: 20px auto;">
+                                            <h2>Houston, we have a... missing page!</h2>
+                                            <p>It seems the page you're looking for has floated off into the cosmic
+                                                void. Or maybe it's just playing hide and seek?</p>
+                                            <p>Return to the <a href="/">Homepage</a> and plot a new course.</p>
+                                            <p>If you're sure this page should exist, perhaps it's on an unscheduled
+                                                spacewalk. Try again later!</p>
+                                            <% } %>
+                    </div>
+
+                    <style>
+                        .error-container {
+                            text-align: center;
+                            padding: 20px;
+                            margin-top: 20px;
+                            border: 1px solid #ffdddd;
+                            background-color: #fff5f5;
+                            border-radius: 8px;
+                        }
+
+                        .error-container h1,
+                        .error-container h2 {
+                            color: #d9534f;
+                        }
+
+                        .error-message-detail {
+                            font-style: italic;
+                            color: #555;
+                            background-color: #eee;
+                            padding: 10px;
+                            border-radius: 4px;
+                            margin-bottom: 20px;
+                            word-break: break-all;
+                        }
+
+                        .error-container ul {
+                            list-style-type: none;
+                            padding: 0;
+                        }
+
+                        .error-container ul li {
+                            margin-bottom: 10px;
+                        }
+
+                        .error-container img {
+                            opacity: 0.8;
+                        }
+                    </style>
