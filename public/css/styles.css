@@ -515,5 +515,16 @@ footer {
   h2 {
     font-size: 1.8rem;
   }
-
+@media (max-width: 767px) {
+  .info-section {
+    display: flex;
+    flex-direction: column;
+  }
+  #info-right {
+    order: 1; /* 'DMC Delorean Reviews' over 'Delorean Upgrades'*/
+  }
+  #info-left {
+    order: 2; /* 'Delorean Upgrades' under 'DMC Delorean Reviews'*/
+  }
+}
 }
