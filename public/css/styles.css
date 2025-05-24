@@ -512,6 +512,7 @@ footer {
   }
 }
 
+/* Media order adjustments */
 @media (max-width: 767px) {
   .info-section {
     display: flex;
@@ -524,21 +525,20 @@ footer {
     order: 2; /* 'Delorean Upgrades' under 'DMC Delorean Reviews' */
   }
 
-  nav ul li a {
-    padding: 0.75em 1em;
-    font-size: 1.1rem;
-  }
-
-  @media (max-width: 767px) {
+  /* Mobile view adjustments */
   nav ul {
-    display: block; 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: space-evenly; 
+    text-align: center;
   }
   nav ul li {
-    display: block; 
+    border-bottom: none; 
+    flex: 1; 
+    min-width: fit-content; 
   }
   nav ul li a {
-    padding: 0.75em 1em;
-    font-size: 1.1rem;
+    padding: 0.75em 0.5em; 
+    font-size: 0.9rem; 
   }
-}
 }
