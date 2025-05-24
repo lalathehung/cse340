@@ -528,4 +528,17 @@ footer {
     padding: 0.75em 1em;
     font-size: 1.1rem;
   }
+
+  @media (max-width: 767px) {
+  nav ul {
+    display: block; 
+  }
+  nav ul li {
+    display: block; 
+  }
+  nav ul li a {
+    padding: 0.75em 1em;
+    font-size: 1.1rem;
+  }
+}
 }
