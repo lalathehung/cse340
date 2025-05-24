@@ -4,3 +4,334 @@
 *:after {
   box-sizing: border-box;
 }
+
+body {
+  margin: 0;
+  font-family: 'Lato', sans-serif;
+  /* Might USe */
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  background-image: url('/images/site/small_check.jpg');
+  /* Using the smaller, tileable one */
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+img {
+  max-width: 100%;
+  /* Keeps images responsive */
+  height: auto;
+  display: block;
+}
+
+h1,
+h2 {
+  font-family: 'Orbitron', sans-serif;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  color: #0b4f6c;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+a {
+  color: #017bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* --- Layout Container over the Checkered background--- */
+#wrapper {
+  max-width: 1200px;
+  margin: 1em auto;
+  background-color: #fff;
+  border: 4px solid #4BD6CB;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  padding: 1em;
+  border-radius: 5px;
+  /* Styling preference - rounded corners */
+}
+
+/* --- Header --- */
+#top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #eee;
+}
+
+#top-header .siteName a {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+#tools a {
+  font-size: 1rem;
+  padding: 0.5em 1em;
+  background-color: #4BD6CB;
+  color: #3B2525;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+#tools a:hover {
+  background-color: #3a75a8;
+  color: #3B2525;
+  text-decoration: none;
+}
+
+
+nav {
+  background-color: #343a40;
+  margin-top: 1em;
+  border-radius: 4px;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+nav ul li {
+  border-bottom: 1px solid #495057;
+}
+
+nav ul li:last-child {
+  border-bottom: none;
+  /* Remove border from last item */
+}
+
+nav ul li a {
+  display: block;
+  padding: 0.75em 1em;
+  color: #f8f9fa;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+nav ul li a:hover {
+  background-color: #495057;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Active Navigation Link */
+nav ul li.active a {
+  background-color: #4BD6CB;
+  color: #3B2525;
+  font-weight: bold;
+}
+
+
+/* --- Main Content Sections --- */
+main {
+  padding: 1em 0;
+}
+
+h1 {
+  text-align: center;
+  color: #0b4f6c;
+  margin-bottom: 1em;
+}
+
+/* --- Hero Section --- */
+#hero-image-section {
+  position: relative;
+  margin-bottom: 2em;
+  overflow: hidden;
+}
+
+.hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  background-color: #4BD6CB;
+  padding: 1.5%;
+  border-radius: 5px;
+  color: #3B2525;
+  width: clamp(160px, 25%, 300px);
+  /* I don't want the overlay to float */
+  transition: width 0.1s ease-in-out, top 0.1s ease-in-out, left 0.1s ease-in-out;
+}
+
+.hero-overlay h2 {
+  margin: 0 0 0.5em 0;
+  color: #3B2525;
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+}
+
+.hero-overlay ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1em 0;
+}
+
+.hero-overlay li {
+  margin-bottom: 0.3em;
+  font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: #f0ad4e;
+  color: #333;
+  padding: 0.6em 1.2em;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+}
+
+.cta-button:hover {
+  background-color: #ec971f;
+  color: #333;
+  text-decoration: none;
+}
+
+/* --- Information Section (Upgrades & Reviews) --- */
+#information {
+  margin-top: 2em;
+}
+
+#info-left,
+#info-right {
+  margin-bottom: 2em;
+}
+
+#upgrade-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 2 columns */
+  gap: 1em;
+}
+
+.upgrade-option {
+  background-color: #4BD6CB;
+  padding: 1em;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.upgrade-image-container {
+  background-color: #fff;
+  padding: 5px;
+  margin-bottom: 0.5em;
+  display: inline-block;
+  border-radius: 3px;
+}
+
+.upgrade-option img {
+  max-height: 60px;
+  width: auto;
+  margin: 0 auto;
+}
+
+.upgrade-link {
+  display: block;
+  margin-top: 0.5em;
+  color: #3B2525;
+  font-weight: bold;
+}
+
+.upgrade-link:hover {
+  text-decoration: underline;
+  color: #f0f0f0;
+}
+
+#reviews ul {
+  list-style: disc;
+  padding-left: 25px;
+  margin: 0;
+}
+
+#reviews li {
+  margin-bottom: 0.75em;
+}
+
+/* --- Footer --- */
+footer {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #eee;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+
+@media (min-width: 768px) {
+
+  #wrapper {
+    margin: 2em auto;
+    padding: 2em;
+  }
+
+  /* --- Navigation (Horizontal) --- */
+  nav ul {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: left;
+  }
+
+  nav ul li {
+    border-bottom: none;
+  }
+
+  nav ul li a {
+    padding: 0.75em 1.5em;
+  }
+
+
+  .info-section {
+    display: flex;
+    gap: 2em;
+  }
+
+  #info-left {
+    flex: 1;
+    margin-bottom: 0;
+    /* Remove bottom margin when side-by-side */
+  }
+
+  #info-right {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  /* Increasing font sizes slightly when smaller width */
+  body {
+    font-size: 17px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+}
