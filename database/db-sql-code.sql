@@ -170,7 +170,7 @@ VALUES (
         'GM',
         'Hummer',
         '2016',
-        'Do you have 6 kids and like to go offroading? The Hummer gives you the small interiors with an engine to get you out of any muddy or rocky situation.',
+        'Do you have 6 kids and like to go offroading? The Hummer gives you small interiors with an engine to get you out of any muddy or rocky situation.',
         '/images/hummer.jpg',
         '/images/hummer-tn.jpg',
         58800,
