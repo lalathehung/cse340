@@ -22,7 +22,7 @@ WHERE account_email = 'tony@starkent.com';
 UPDATE public.inventory
 SET inv_description = REPLACE(
         inv_description,
-        'the small interiors',
+        'small interiors',
         'a huge interior'
     )
 WHERE inv_make = 'GM'
