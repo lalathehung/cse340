@@ -5,63 +5,98 @@ const Util = {}
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function (req, res, next) {
-    let data = await invModel.getClassifications()
-    let list = "<ul>"
-    list += '<li><a href="/" title="Home page">Home</a></li>'
-    data.forEach((row) => {
-        list += "<li>"
-        list +=
-            '<a href="/inv/type/' +
-            row.classification_id +
-            '" title="See our inventory of ' +
-            row.classification_name +
-            ' vehicles">' +
-            row.classification_name +
-            "</a>"
-        list += "</li>"
-    })
-    list += "</ul>"
-    return list
+    try {
+        let data = await invModel.getClassifications()
+        // Check if data and data.rows exist at the same time
+        if (!data || !data.rows) {
+            console.error("No data returned from classifications query")
+            return "<ul><li><a href='/' title='Home page'>Home</a></li><li>No classifications found</li></ul>"
+        }
+        let list = "<ul>"
+        list += '<li><a href="/" title="Home page">Home</a></li>'
+        // Check row
+        if (data.rows.length === 0) {
+            list += "<li>No classifications available</li>"
+        } else {
+            data.rows.forEach((row) => {
+                list += "<li>"
+                list +=
+                    '<a href="/inv/type/' +
+                    row.classification_id +
+                    '" title="See our inventory of ' +
+                    row.classification_name +
+                    ' vehicles">' +
+                    row.classification_name +
+                    "</a>"
+                list += "</li>"
+            })
+        }
+        list += "</ul>"
+        return list
+    } catch (error) {
+        console.error("Error in getNav:", error)
+        // Back to original
+        return "<ul><li><a href='/' title='Home page'>Home</a></li><li>Error loading navigation</li></ul>"
+    }
 }
 
-/* **************************************
- * Build the classification view HTML
- * ************************************ */
+/* Other remain */
 Util.buildClassificationGrid = async function (data) {
-    let grid = ""
-    if (!data || data.length === 0) {
+    let grid
+    if (data.length > 0) {
+        grid = '<ul id="inv-display">'
+        data.forEach(vehicle => {
+            grid += '<li>'
+            grid += '<a href="../../inv/detail/' + vehicle.inv_id
+                + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model
+                + 'details"><img src="' + vehicle.inv_thumbnail
+                + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
+                + ' on CSE Motors" /></a>'
+            grid += '<div class="namePrice">'
+            grid += '<h2>'
+            grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View '
+                + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">'
+                + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
+            grid += '</h2>'
+            grid += '<span>$'
+                + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+            grid += '</div>'
+            grid += '</li>'
+        })
+        grid += '</ul>'
+    } else {
         grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
-        return grid
     }
-    grid = '<ul id="inv-display">'
-    data.forEach(vehicle => {
-        grid += '<li>'
-        grid += '<a href="../../inv/detail/' + vehicle.inv_id
-            + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model
-            + 'details"><img src="' + vehicle.inv_thumbnail
-            + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
-            + ' on CSE Motors" /></a>'
-        grid += '<div class="namePrice">'
-        grid += '<hr />'
-        grid += '<h2>'
-        grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View '
-            + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">'
-            + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
-        grid += '</h2>'
-        grid += '<span>$'
-            + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-        grid += '</div>'
-        grid += '</li>'
-    })
-    grid += '</ul>'
     return grid
 }
 
-/* ****************************************
- * Middleware For Handling Errors
- * Wrap other function in this for
- * General Error Handling
- **************************************** */
+Util.buildInventoryDetailView = async function (itemData) {
+    if (!itemData) {
+        return '<p class="notice">Sorry, details for this vehicle could not be found.</p>';
+    }
+    const price = parseFloat(itemData.inv_price);
+    const miles = typeof itemData.inv_miles === 'number' ? itemData.inv_miles : 0;
+    const formattedPrice = new Intl.NumberFormat('en-US').format(price);
+    const formattedMileage = new Intl.NumberFormat('en-US').format(miles);
+    let html = `
+        <div id="vehicle-detail-container">
+            <div class="vehicle-image-section">
+                <img src="${itemData.inv_image}" alt="Image of ${itemData.inv_make} ${itemData.inv_model}">
+            </div>
+            <div class="vehicle-info-section">
+                <h1>${itemData.inv_make} ${itemData.inv_model}</h1>
+                <p class="vehicle-year"><strong>Year:</strong> ${itemData.inv_year}</p>
+                <p class="vehicle-price"><strong>Price:</strong> $${formattedPrice}</p>
+                <p class="vehicle-description"><strong>Description:</strong> ${itemData.inv_description}</p>
+                <hr>
+                <p class="vehicle-mileage"><strong>Mileage:</strong> ${formattedMileage} miles</p>
+                <p class="vehicle-color"><strong>Color:</strong> ${itemData.inv_color}</p>
+            </div>
+        </div>
+    `;
+    return html;
+}
+
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
 module.exports = Util
