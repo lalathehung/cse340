@@ -7,34 +7,35 @@ const invCont = {}
  *  Build inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
-    const classification_id = parseInt(req.params.classificationId, 10) 
-    let nav = await utilities.getNav()
-
-    // Check if classification_id is valid
-    if (isNaN(classification_id) || classification_id < 1) {
-        return res.render("errors/error", {
-            title: "Invalid Classification",
-            message: "Sorry, the classification ID is invalid.",
-            nav
-        })
-    }
-
+    const classification_id = req.params.classificationId
     const data = await invModel.getInventoryByClassificationId(classification_id)
-    if (!data || data.length === 0) {
-        return res.render("errors/error", {
-            title: "No Vehicles Found",
-            message: "Sorry, no vehicles found for this classification.",
-            nav
-        })
-    }
-
-    const className = data[0].classification_name
     const grid = await utilities.buildClassificationGrid(data)
+    let nav = await utilities.getNav()
+    const className = data[0].classification_name
     res.render("./inventory/classification", {
         title: className + " vehicles",
         nav,
         grid,
     })
+}
+
+/* ***************************
+ *  Build inventory item detail view
+ *  Example: /inv/detail/5
+ * ************************** */
+invCont.buildByInventoryId = async function (req, res, next) {
+    const inventory_id = req.params.inventoryId;
+    const itemData = await invModel.getInventoryByInventoryId(inventory_id);
+
+    const detailViewHtml = await utilities.buildInventoryDetailView(itemData);
+    let nav = await utilities.getNav();
+    const vehicleName = `${itemData.inv_make} ${itemData.inv_model}`;
+
+    res.render("./inventory/detail", {
+        title: vehicleName,
+        nav,
+        detailContent: detailViewHtml,
+    });
 }
 
 module.exports = invCont

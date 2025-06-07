@@ -1,65 +1,43 @@
 const invModel = require("../models/inventory-model")
 const Util = {}
-
-/* ************************
- * Constructs the nav HTML unordered list
- ************************** */
 Util.getNav = async function (req, res, next) {
     try {
         let data = await invModel.getClassifications()
-        // Check if data and data.rows exist at the same time
-        if (!data || !data.rows) {
+        if (!data || !Array.isArray(data)) {
             console.error("No data returned from classifications query")
             return "<ul><li><a href='/' title='Home page'>Home</a></li><li>No classifications found</li></ul>"
         }
         let list = "<ul>"
         list += '<li><a href="/" title="Home page">Home</a></li>'
-        // Check row
-        if (data.rows.length === 0) {
+        if (data.length === 0) {
             list += "<li>No classifications available</li>"
         } else {
-            data.rows.forEach((row) => {
+            data.forEach((row) => {
                 list += "<li>"
-                list +=
-                    '<a href="/inv/type/' +
-                    row.classification_id +
-                    '" title="See our inventory of ' +
-                    row.classification_name +
-                    ' vehicles">' +
-                    row.classification_name +
-                    "</a>"
+                list += '<a href="/inv/type/' + row.classification_id + '" title="See our inventory of ' + row.classification_name + ' vehicles">' + row.classification_name + "</a></li>"
                 list += "</li>"
             })
         }
         list += "</ul>"
         return list
     } catch (error) {
-        console.error("Error in getNav:", error)
-        // Back to original
+        console.error("Error in getNav:", error.stack)
         return "<ul><li><a href='/' title='Home page'>Home</a></li><li>Error loading navigation</li></ul>"
     }
 }
-
-/* Other remain */
+// Others remain the same
 Util.buildClassificationGrid = async function (data) {
     let grid
     if (data.length > 0) {
         grid = '<ul id="inv-display">'
         data.forEach(vehicle => {
             grid += '<li>'
-            grid += '<a href="../../inv/detail/' + vehicle.inv_id
-                + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model
-                + 'details"><img src="' + vehicle.inv_thumbnail
-                + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
-                + ' on CSE Motors" /></a>'
+            grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model + 'details"><img src="' + vehicle.inv_thumbnail + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model + ' on CSE Motors" /></a>'
             grid += '<div class="namePrice">'
             grid += '<h2>'
-            grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View '
-                + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">'
-                + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
+            grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
             grid += '</h2>'
-            grid += '<span>$'
-                + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+            grid += '<span>$' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
             grid += '</div>'
             grid += '</li>'
         })
@@ -69,7 +47,6 @@ Util.buildClassificationGrid = async function (data) {
     }
     return grid
 }
-
 Util.buildInventoryDetailView = async function (itemData) {
     if (!itemData) {
         return '<p class="notice">Sorry, details for this vehicle could not be found.</p>';
@@ -96,7 +73,5 @@ Util.buildInventoryDetailView = async function (itemData) {
     `;
     return html;
 }
-
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
-
 module.exports = Util
