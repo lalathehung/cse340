@@ -1,0 +1,51 @@
+<h1><%- title %></h1>
+
+<%- messages() %>
+
+<% if (typeof errors !== 'undefined' && errors && errors.array && errors.array().length > 0) { %>
+  <ul class="validation-errors">
+    <% errors.array().forEach(error => { %>
+      <li><%- error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<div class="form-container">
+    <p class="form-instructions">
+        Classification name must be alphabetic characters only and cannot contain spaces or special characters.
+    </p>
+    <form id="addClassificationForm" action="/inv/add-classification" method="POST">
+        <fieldset>
+
+            <div>
+                <label for="classification_name">New Classification Name:</label>
+                <input type="text" id="classification_name" name="classification_name" required
+                       pattern="^[a-zA-Z]+$"
+                       title="Please enter alphabetic characters only (no spaces or special characters)."
+                       value="<%= locals.classification_name || '' %>">
+            </div>
+
+            <button type="submit" class="form-button">Add Classification</button>
+        </fieldset>
+    </form>
+    <div class="form-navigation">
+        <a href="/inv/" class="go-back-button">Back to Management</a>
+    </div>
+</div>
+
+<%# Display existing classifications %>
+<% if (typeof classifications !== 'undefined' && classifications && classifications.length > 0) { %>
+    <div class="existing-classifications-list">
+        <h2>Current Classifications</h2>
+        <ul>
+            <% classifications.forEach(classification => { %>
+                <li><%= classification.classification_name %></li>
+            <% }) %>
+        </ul>
+    </div>
+<% } else if (typeof classifications !== 'undefined') { %>
+    <div class="existing-classifications-list">
+        <h2>Current Classifications</h2>
+        <p>No classifications currently in the database.</p>
+    </div>
+<% } %>

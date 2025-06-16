@@ -1,0 +1,69 @@
+<h1 class="login-heading"><%- title %></h1>
+
+<%- messages() %>
+
+<% if (typeof errors !== 'undefined' && errors && errors.array && errors.array().length > 0) { %>
+  <ul class="validation-errors">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<div class="login-container">
+    <form id="loginForm" action="/account/login" method="POST">
+        <fieldset>
+            <!-- <legend>User Login</legend> -->
+            <div>
+                <label for="account_email">Email:</label>
+                <input type="email" id="account_email" name="account_email" required maxlength="50"
+                       value="<%= locals.account_email || '' %>">
+            </div>
+
+            <div>
+                <label for="account_password">Password:</label>
+                <div class="password-wrapper">
+                    <input type="password" id="account_password" name="account_password" required maxlength="24"
+                           pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\s])[^\s]{12,24}$"
+                           title="Password must be at least 12 characters and include at least 1 capital letter, 1 number, and 1 special character (no spaces).">
+                    <button type="button" id="togglePassword" class="toggle-password-button" aria-label="Show password as plain text. Note: this will visually expose your password on the screen.">
+                        <img src="/images/password/eye-off.png" alt="Show password">
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </fieldset>
+    </form>
+    <p class="signup-link">No account? <a href="/account/register">Sign-up</a></p>
+</div>
+
+<script>
+    //  Ok, I need to make sure DOM is loaded first
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ok, this is for the toggle button logic to flip on and off plain text and p/w
+        const togglePasswordButton = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('account_password');
+
+        if (togglePasswordButton && passwordInput) {
+            // Get the image inside the button
+            const toggleIcon = togglePasswordButton.querySelector('img');
+
+            togglePasswordButton.addEventListener('click', function () {
+                // Toggle the type check
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                // Change the icon and alt text
+                if (type === 'password') {
+                    toggleIcon.src = '/images/password/eye-off.png';
+                    toggleIcon.alt = 'Show password';
+                    this.setAttribute('aria-label', 'Show password as plain text. Note: this will visually expose your password on the screen.');
+                } else {
+                    toggleIcon.src = '/images/password/eye-on.png';
+                    toggleIcon.alt = 'Hide password';
+                    this.setAttribute('aria-label', 'Hide password and display as dots.');
+                }
+            });
+        }
+    });
+</script>
