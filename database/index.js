@@ -1,35 +1,56 @@
 const { Pool } = require("pg")
 require("dotenv").config()
-/* ***************
- * Connection Pool
- * SSL Object needed for local testing of app
- * But will cause problems in production environment
- * If - else will make determination which to use
- * *************** */
+
+// Log environment variables for debugging
+console.log("NODE_ENV:", process.env.NODE_ENV)
+console.log("DATABASE_URL:", process.env.DATABASE_URL)
+
 let pool
-if (process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV === "development") {
     pool = new Pool({
         connectionString: process.env.DATABASE_URL,
-        ssl: false
-    })
-
-    // Added for troubleshooting queries
-    // during development
-    module.exports = {
-        async query(text, params) {
-            try {
-                const res = await pool.query(text, params)
-                console.log("executed query", { text })
-                return res
-            } catch (error) {
-                console.error("error in query", { text })
-                throw error
-            }
+        ssl: {
+            rejectUnauthorized: false // Allow self-signed certificates for Render.com
         },
-    }
+        max: 10,                      // Maximum number of connections
+        idleTimeoutMillis: 30000,     // Close idle connections after 30 seconds
+        connectionTimeoutMillis: 5000 // Connection timeout after 5 seconds
+    })
 } else {
     pool = new Pool({
         connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        },
+        max: 10,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 5000
     })
-    module.exports = pool
+}
+
+// Listen for connection pool errors
+pool.on("error", (err) => {
+    console.error("Connection pool error:", err.stack)
+})
+
+// Test database connection
+pool.connect((err, client, release) => {
+    if (err) {
+        return console.error("Connection pool failed to connect:", err.stack)
+    }
+    console.log("Successfully connected to the database")
+    release()
+})
+
+module.exports = {
+    async query(text, params) {
+        try {
+            console.log("Executing query:", { text, params })
+            const res = await pool.query(text, params)
+            return res
+        } catch (error) {
+            console.error("Query error:", { text, error: error.message })
+            throw error
+        }
+    }
 }
