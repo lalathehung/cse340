@@ -47,10 +47,10 @@ invCont.buildByInventoryId = async function (req, res, next) {
 invCont.buildManagementView = async function (req, res, next) {
     let nav = await utilities.getNav();
 
-    if (!req.session.loggedin) { // Example protection
-       req.flash("notice", "Please log in to access vehicle management.");
-       return res.redirect("/account/login");
-    }
+    // if (!req.session.loggedin) { // Example protection
+    //    req.flash("notice", "Please log in to access vehicle management.");
+    //    return res.redirect("/account/login");
+    // }
 
     res.render("./inventory/management", {
         title: "Vehicle Management",
@@ -103,6 +103,96 @@ invCont.processAddClassification = async function (req, res, next) {
             nav,
             errors: { array: () => [{ msg: "Failed to add classification to the database." }] },
             classification_name,
+        });
+    }
+};
+
+/* ***************************
+ *  Build Add New Inventory Item View
+ * ************************** */
+invCont.buildAddInventory = async function (req, res, next) {
+    let nav = await utilities.getNav();
+    let classificationList = await utilities.buildClassificationList();
+
+    res.render("./inventory/add-inventory", {
+        title: "Add New Inventory Item",
+        nav,
+        classificationList,
+        errors: null,
+        // Initialize fields for sticky form
+        inv_make: "",
+        inv_model: "",
+        inv_year: "",
+        inv_description: "",
+        inv_image: "/images/vehicles/no-image.png", // Default value
+        inv_thumbnail: "/images/vehicles/no-image-tn.png", // Default value
+        inv_price: "",
+        inv_miles: "",
+        inv_color: "",
+        classification_id: "",
+    });
+};
+
+/* ***************************
+ *  Process Adding a New Inventory Item
+ * ************************** */
+invCont.processAddInventory = async function (req, res, next) {
+    const {
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_miles,
+        inv_color,
+        classification_id,
+    } = req.body;
+
+    let nav = await utilities.getNav();
+
+    const addResult = await invModel.addInventoryItem(
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        parseFloat(String(inv_price).replace(/,/g, '')), // Removing the commas
+        parseInt(String(inv_miles).replace(/,/g, '')),   // Removing the commas
+        inv_color,
+        parseInt(classification_id) // It MUST be an int
+    );
+
+    if (addResult && addResult.rowCount > 0) {
+        req.flash("success", `The vehicle "${inv_make} ${inv_model}" was successfully added to inventory.`);
+        // Redirecting to management view or render it
+        res.status(201).render("./inventory/management", {
+            title: "Vehicle Management",
+            nav,
+            errors: null,
+        });
+    } else {
+        // Failled to add to the DB
+        req.flash("error", `Adding "${inv_make} ${inv_model}" failed. Please try again.`);
+        let classificationList = await utilities.buildClassificationList(classification_id);
+        res.status(501).render("./inventory/add-inventory", {
+            title: "Add New Inventory Item",
+            nav,
+            classificationList,
+            errors: { array: () => [{ msg: "Failed to add vehicle to the database." }] }, //
+            // Pass all fields back for sticky form on the error
+            inv_make,
+            inv_model,
+            inv_year,
+            inv_description,
+            inv_image,
+            inv_thumbnail,
+            inv_price,
+            inv_miles,
+            inv_color,
+            classification_id,
         });
     }
 };

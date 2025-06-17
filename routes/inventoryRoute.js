@@ -7,26 +7,40 @@ const invValidate = require('../utilities/inventory-validation');
 
 router.get(
     "/",
-    utilities.checkLogin,
+    // utilities.checkLogin,
     utilities.handleErrors(invController.buildManagementView)
 );
 
 // Classification route GET
 router.get(
     "/add-classification",
-    utilities.checkLogin,
+    // utilities.checkLogin,
     utilities.handleErrors(invController.buildAddClassification)
 );
 
 // Classification route POST to add new
 router.post(
     "/add-classification",
-    utilities.checkLogin,
+    // utilities.checkLogin,
     invValidate.addClassificationRules(),
     invValidate.checkClassificationData,
     utilities.handleErrors(invController.processAddClassification)
 );
 
+router.get(
+    "/add-inventory",
+    // utilities.checkLogin,
+    utilities.handleErrors(invController.buildAddInventory)
+);
+
+// POST Add New Inventory Item
+router.post(
+    "/add-inventory",
+    // utilities.checkLogin,
+    invValidate.addInventoryRules(),
+    invValidate.checkInventoryData,
+    utilities.handleErrors(invController.processAddInventory)
+);
 
 // GET - Get Cars by Classification id
 router.get("/type/:classificationId",

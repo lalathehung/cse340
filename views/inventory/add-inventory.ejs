@@ -1,0 +1,99 @@
+<h1><%- title %></h1>
+
+<%- messages() %>
+
+<%# Display Server Side validation errors %>
+<% if (typeof errors !== 'undefined' && errors && errors.array && errors.array().length > 0) { %>
+<ul class="validation-errors">
+    <% errors.array().forEach(error => { %>
+    <li><%- error.msg %></li>
+    <% }) %>
+</ul>
+<% } %>
+
+<div class="form-container">
+    <p class="form-instructions">
+        All fields are required. Please ensure data formats are correct.
+    </p>
+    <form id="addInventoryForm" action="/inv/add-inventory" method="POST">
+        <fieldset>
+            <div>
+                <label for="classificationList">Classification:</label>
+                <%- classificationList %> <%# This renders the select classification dropdown %>
+            </div>
+
+            <div>
+                <label for="inv_make">Make:</label>
+                <input type="text" id="inv_make" name="inv_make" required minlength="2" maxlength="50"
+                    value="<%= locals.inv_make || '' %>">
+            </div>
+
+            <div>
+                <label for="inv_model">Model:</label>
+                <input type="text" id="inv_model" name="inv_model" required minlength="2" maxlength="50"
+                    value="<%= locals.inv_model || '' %>">
+            </div>
+
+            <div>
+                <label for="inv_year">Year:</label>
+                <input type="number" id="inv_year" name="inv_year" required
+                    min="1900" max="<%= new Date().getFullYear() + 5 %>" placeholder="YYYY"
+                    value="<%= locals.inv_year || '' %>">
+                <small>Enter a 4-digit year (e.g., 2025).</small>
+            </div>
+
+            <div>
+                <label for="inv_description">Description:</label>
+                <textarea id="inv_description" name="inv_description" required rows="4"
+                    ><%= locals.inv_description || '' %></textarea>
+            </div>
+
+            <div>
+                <label for="inv_image">Image Path:</label>
+                <input type="text" id="inv_image" name="inv_image" required
+                    pattern="^\/?images\/vehicles\/[a-zA-Z0-9_.-]+$"
+                    title="Example: /images/vehicles/your-image.png"
+                    value="<%= locals.inv_image || '/images/vehicles/no-image.png' %>">
+                <small>Default: /images/vehicles/no-image.png</small>
+            </div>
+
+            <div>
+                <label for="inv_thumbnail">Thumbnail Path:</label>
+                <input type="text" id="inv_thumbnail" name="inv_thumbnail" required
+                    pattern="^\/?images\/vehicles\/[a-zA-Z0-9_.-]+$"
+                    title="Example: /images/vehicles/your-tn-image.png"
+                    value="<%= locals.inv_thumbnail || '/images/vehicles/no-image-tn.png' %>">
+                <small>Default: /images/vehicles/no-image-tn.png</small>
+            </div>
+
+            <div>
+                <label for="inv_price">Price:</label>
+                <input type="text" id="inv_price" name="inv_price" required
+                       pattern="^\d{1,9}(\.\d{1,2})?$"
+                       title="Enter a valid price (e.g., 25000 or 25000.99, no commas)"
+                       value="<%= locals.inv_price || '' %>">
+                <small>Enter numbers and optionally a decimal point for cents (no commas).</small>
+            </div>
+
+            <div>
+                <label for="inv_miles">Mileage:</label>
+                <input type="text" id="inv_miles" name="inv_miles" required
+                       pattern="^\d{1,7}$"
+                       title="Enter mileage as a whole number (no commas or decimals)"
+                       value="<%= locals.inv_miles || '' %>">
+                <small>Enter numbers only (no commas or decimals).</small>
+            </div>
+
+            <div>
+                <label for="inv_color">Color:</label>
+                <input type="text" id="inv_color" name="inv_color" required minlength="2" maxlength="30"
+                    value="<%= locals.inv_color || '' %>">
+            </div>
+
+            <button type="submit" class="form-button">Add Vehicle to Inventory</button>
+        </fieldset>
+    </form>
+    <div class="form-navigation">
+        <a href="/inv/" class="go-back-button">Back to Management</a>
+    </div>
+</div>
