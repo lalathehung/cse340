@@ -1,8 +1,9 @@
 <h1><%- title %></h1>
 
+<%- messages() %>
+
 <div class="profile-container">
     <p>Welcome back, <%- account_firstname %> - you have successfully logged in!</p>
-
-    <%# <p><a href="/account/update">Update Account Information</a></p> %>
-    <%# <p><a href="/account/logout">Logout</a></p> %>
+    <p><a href="/account/favorites">View My Favorites</a></p>
+    <p><a href="/account/logout">Logout</a></p>
 </div>

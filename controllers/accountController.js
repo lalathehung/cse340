@@ -1,5 +1,6 @@
 const utilities = require("../utilities/")
 const accountModel = require("../models/account-model")
+const favoriteModel = require("../models/favorite-model")
 const bcrypt = require("bcryptjs")
 
 /* ****************************************
@@ -59,7 +60,7 @@ async function registerAccount(req, res) {
     hashedPassword
   )
 
-  if (regResult && regResult.rowCount && regResult.rowCount > 0) {  // I added these row checks as validation it got added
+  if (regResult && regResult.rowCount && regResult.rowCount > 0) {
     req.flash(
       "notice",
       `Congratulations, you\'re registered ${account_firstname}. Please log in.`
@@ -83,32 +84,30 @@ async function registerAccount(req, res) {
 * *************************************** */
 async function loginAccount(req, res, next) {
   let nav = await utilities.getNav();
-  const { account_email, account_password } = req.body; // These were validated by checkLoginData
+  const { account_email, account_password } = req.body;
   const accountData = req.accountData;
 
   try {
     const passwordMatch = await bcrypt.compare(account_password, accountData.account_password);
 
     if (passwordMatch) {
-      // Passwords match!!! Store user info in session
       req.session.loggedin = true;
-      req.session.accountData = { // Remember, do not store SENSITIVE info, like p/w
+      req.session.accountData = {
           account_id: accountData.account_id,
           account_firstname: accountData.account_firstname,
           account_lastname: accountData.account_lastname,
           account_email: accountData.account_email,
           account_type: accountData.account_type,
       };
-      // Placeholder page
       req.flash("success", `Welcome back, ${accountData.account_firstname}!`);
-      return res.redirect("/account/profile");  // might change to management later
+      return res.redirect("/account/profile");
     } else {
-      req.flash("warning", "Invalid credentials. Please check your email and password."); // Validator should catch this but I'll keep just in case
+      req.flash("warning", "Invalid credentials. Please check your email and password.");
       return res.status(400).render("account/login", {
         title: "Login",
         nav,
         errors: null,
-        account_email, // Gonna pass back the email for messaging clarity
+        account_email,
       });
     }
   } catch (error) {
@@ -124,7 +123,6 @@ async function buildProfileView(req, res, next) {
     const accountData = req.session.accountData;
 
     if (!accountData) {
-        // Techynically won't happen with the checkLogin middleware, but maybe multi-tab concurrency protection
         req.flash("notice", "User data not found. Please log in again.");
         return res.redirect("/account/login");
     }
@@ -133,7 +131,29 @@ async function buildProfileView(req, res, next) {
         title: "My Profile",
         nav,
         errors: null,
-        account_firstname: accountData.account_firstname // Pass the first name to the view for msg
+        account_firstname: accountData.account_firstname
+    });
+}
+
+/* ****************************************
+*  Build Favorites View
+* *************************************** */
+async function buildFavoritesView(req, res, next) {
+    let nav = await utilities.getNav();
+    const accountData = req.session.accountData;
+
+    if (!accountData) {
+        req.flash("notice", "Please log in to view your favorites.");
+        return res.redirect("/account/login");
+    }
+
+    const favorites = await favoriteModel.getFavoritesByAccountId(accountData.account_id);
+    res.render("account/favorites", {
+        title: "My Favorites",
+        nav,
+        errors: null,
+        favorites,
+        account_firstname: accountData.account_firstname
     });
 }
 
@@ -144,7 +164,7 @@ async function buildAccountManagementView(req, res, next) {
     let nav = await utilities.getNav();
     const accountData = req.session.accountData;
 
-    res.render("account/management", { // Maybe will create later??
+    res.render("account/management", {
         title: "Account Management",
         nav,
         errors: null,
@@ -163,8 +183,8 @@ async function logoutAccount(req, res, next) {
             if (err) {
                 console.error("Error destroying session:", err);
             }
-            res.clearCookie('sessionId'); // 'sessionId' is your cookie - clearing it
-            return res.redirect('/'); // Redirect to homepage
+            res.clearCookie('sessionId');
+            return res.redirect('/');
         });
     } else {
         res.redirect('/');
@@ -177,6 +197,7 @@ module.exports = {
     registerAccount,
     loginAccount,
     buildProfileView,
+    buildFavoritesView,
     buildAccountManagementView,
     logoutAccount
-};
+}

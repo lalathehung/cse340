@@ -1,3 +1,42 @@
 <div class="detail-page-content">
     <%- detailContent %>
 </div>
+
+<% if (locals.loggedin) { %>
+    <div class="favorite-action">
+        <% if (locals.isFavorited) { %>
+            <a href="/inv/remove-favorite/<%= locals.inventory_id %>" class="favorite-button remove">Remove from Favorites</a>
+        <% } else { %>
+            <a href="/inv/add-favorite/<%= locals.inventory_id %>" class="favorite-button add">Add to Favorites</a>
+        <% } %>
+    </div>
+<% } %>
+
+<style>
+    .favorite-action {
+        margin-top: 1em;
+        text-align: center;
+    }
+    .favorite-button {
+        display: inline-block;
+        padding: 0.8em 1.5em;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.2s ease;
+    }
+    .favorite-button.add {
+        background-color: #2ecc71;
+        color: white;
+    }
+    .favorite-button.add:hover {
+        background-color: #27ae60;
+    }
+    .favorite-button.remove {
+        background-color: #e74c3c;
+        color: white;
+    }
+    .favorite-button.remove:hover {
+        background-color: #c0392b;
+    }
+</style>

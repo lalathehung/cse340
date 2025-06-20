@@ -5,7 +5,7 @@ const utilities = require("../utilities/");
 const regValidate = require('../utilities/account-validation')
 
 // Making a login page
-router.get("/login",utilities.handleErrors(accountController.buildLogin));
+router.get("/login", utilities.handleErrors(accountController.buildLogin));
 
 // Making a registration page
 router.get("/register", utilities.handleErrors(accountController.buildRegister));
@@ -18,13 +18,13 @@ router.post("/register",
 )
 
 // Process the login attempt
-router.post( "/login",
+router.post("/login",
   regValidate.loginRules(),
   regValidate.checkLoginData,
   utilities.handleErrors(accountController.loginAccount)
 )
 
-// For Profile page  -  /account/profile
+// For Profile page - /account/profile
 router.get(
     "/profile",
     utilities.checkLogin,
@@ -34,8 +34,8 @@ router.get(
 // Placeholder route for the base /account/ path
 router.get(
     "/",
-    utilities.checkLogin, // Protect this route
-    utilities.handleErrors(accountController.buildAccountManagementView) // Placeholder for now
+    utilities.checkLogin,
+    utilities.handleErrors(accountController.buildAccountManagementView)
 );
 
 // Route for Logout
